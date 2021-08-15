@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import createReducer from "react-use/lib/factory/createReducer";
 import Client from "./graph-ql";
 import { ICourierProviderProps, ICourierContext, Brand } from "./types";
@@ -143,7 +144,7 @@ export const CourierProvider: React.FunctionComponent<ICourierProviderProps> = (
       return;
     }
 
-    localStorage.setItem(
+    AsyncStorage.setItem(
       `${clientKey}/${userId}/provider`,
       JSON.stringify({
         brand: state.brand,
@@ -156,21 +157,21 @@ export const CourierProvider: React.FunctionComponent<ICourierProviderProps> = (
       return;
     }
 
-    const localStorageState = localStorage.getItem(
-      `${clientKey}/${userId}/provider`
-    );
-
-    if (localStorageState) {
-      try {
-        const { brand } = JSON.parse(localStorageState);
-        dispatch({
-          type: "root/GET_BRAND/DONE",
-          payload: brand,
-        });
-      } catch (ex) {
-        console.log("error", ex);
+    AsyncStorage.getItem(`${clientKey}/${userId}/provider`).then(
+      (localStorageState) => {
+        if (localStorageState) {
+          try {
+            const { brand } = JSON.parse(localStorageState);
+            dispatch({
+              type: "root/GET_BRAND/DONE",
+              payload: brand,
+            });
+          } catch (ex) {
+            console.log("error", ex);
+          }
+        }
       }
-    }
+    );
   }, [clientKey, userId]);
 
   const actions = useCourierActions(dispatch);

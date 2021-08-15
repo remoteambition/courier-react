@@ -16,6 +16,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.5",
     "graphql": "^15.5.0",
     "react-use": "^17.2.1",
     "reconnecting-websocket": "^4.4.0",
